@@ -9,38 +9,138 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TendersRouteImport } from './routes/tenders'
+import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as ReportsRouteImport } from './routes/reports'
+import { Route as PipelineRouteImport } from './routes/pipeline'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as TendersIndexRouteImport } from './routes/tenders.index'
+import { Route as TendersIdRouteImport } from './routes/tenders.$id'
 
+const TendersRoute = TendersRouteImport.update({
+  id: '/tenders',
+  path: '/tenders',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReportsRoute = ReportsRouteImport.update({
+  id: '/reports',
+  path: '/reports',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PipelineRoute = PipelineRouteImport.update({
+  id: '/pipeline',
+  path: '/pipeline',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TendersIndexRoute = TendersIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => TendersRoute,
+} as any)
+const TendersIdRoute = TendersIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => TendersRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/pipeline': typeof PipelineRoute
+  '/reports': typeof ReportsRoute
+  '/settings': typeof SettingsRoute
+  '/tenders': typeof TendersRouteWithChildren
+  '/tenders/$id': typeof TendersIdRoute
+  '/tenders/': typeof TendersIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/pipeline': typeof PipelineRoute
+  '/reports': typeof ReportsRoute
+  '/settings': typeof SettingsRoute
+  '/tenders/$id': typeof TendersIdRoute
+  '/tenders': typeof TendersIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/pipeline': typeof PipelineRoute
+  '/reports': typeof ReportsRoute
+  '/settings': typeof SettingsRoute
+  '/tenders': typeof TendersRouteWithChildren
+  '/tenders/$id': typeof TendersIdRoute
+  '/tenders/': typeof TendersIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/pipeline'
+    | '/reports'
+    | '/settings'
+    | '/tenders'
+    | '/tenders/$id'
+    | '/tenders/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/pipeline' | '/reports' | '/settings' | '/tenders/$id' | '/tenders'
+  id:
+    | '__root__'
+    | '/'
+    | '/pipeline'
+    | '/reports'
+    | '/settings'
+    | '/tenders'
+    | '/tenders/$id'
+    | '/tenders/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  PipelineRoute: typeof PipelineRoute
+  ReportsRoute: typeof ReportsRoute
+  SettingsRoute: typeof SettingsRoute
+  TendersRoute: typeof TendersRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/tenders': {
+      id: '/tenders'
+      path: '/tenders'
+      fullPath: '/tenders'
+      preLoaderRoute: typeof TendersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reports': {
+      id: '/reports'
+      path: '/reports'
+      fullPath: '/reports'
+      preLoaderRoute: typeof ReportsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pipeline': {
+      id: '/pipeline'
+      path: '/pipeline'
+      fullPath: '/pipeline'
+      preLoaderRoute: typeof PipelineRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,11 +148,42 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/tenders/': {
+      id: '/tenders/'
+      path: '/'
+      fullPath: '/tenders/'
+      preLoaderRoute: typeof TendersIndexRouteImport
+      parentRoute: typeof TendersRoute
+    }
+    '/tenders/$id': {
+      id: '/tenders/$id'
+      path: '/$id'
+      fullPath: '/tenders/$id'
+      preLoaderRoute: typeof TendersIdRouteImport
+      parentRoute: typeof TendersRoute
+    }
   }
 }
 
+interface TendersRouteChildren {
+  TendersIdRoute: typeof TendersIdRoute
+  TendersIndexRoute: typeof TendersIndexRoute
+}
+
+const TendersRouteChildren: TendersRouteChildren = {
+  TendersIdRoute: TendersIdRoute,
+  TendersIndexRoute: TendersIndexRoute,
+}
+
+const TendersRouteWithChildren =
+  TendersRoute._addFileChildren(TendersRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  PipelineRoute: PipelineRoute,
+  ReportsRoute: ReportsRoute,
+  SettingsRoute: SettingsRoute,
+  TendersRoute: TendersRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
