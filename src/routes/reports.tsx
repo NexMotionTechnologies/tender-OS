@@ -19,7 +19,7 @@ import { STATUS_LABELS } from "@/lib/tenders/types";
 
 export const Route = createFileRoute("/reports")({
   head: () => ({ meta: [{ title: "Reports · NexMotion Tender OS" }] }),
-  component: Reports;
+  component: Reports,
 });
 
 function Reports() {
